@@ -25,16 +25,19 @@ class TopFriends {
   }
 
 
-  public function go(){
+  public function getData(){
 
+    //query to get timeline!
     $query = "SELECT actor_id ,message, type, target_id,likes, comments,post_id FROM stream WHERE source_id = me() LIMIT 100";
     $data = $this->facebook->api('/fql?q='.urlencode($query));
 
 
     foreach($data["data"] as $post_num => $post){
       if($post["actor_id"] == $this->user_id){
+        //this is our own post
         $this->selfPost($post);
       }else{
+        //a friend posted this on my wall
         $this->friendsPost($post);
       }
     }
@@ -52,7 +55,7 @@ class TopFriends {
       $this->addPoint("photos",$tagged["from"]["id"]);
     }
 
-
+    //lets see who we're messaging
     $query = "SELECT recipients FROM thread WHERE folder_id = 0";
     $data = $this->facebook->api('/fql?q='.urlencode($query));
     foreach($data["data"] as $thread){
@@ -62,7 +65,7 @@ class TopFriends {
     }
 
 
-    /////likes!
+    // what objects are we liking
     $query = "SELECT object_id FROM like WHERE user_id=me() LIMIT 100";
     $data = $this->facebook->api('/fql?q='.urlencode($query));
     $get_ids = "";
@@ -73,8 +76,8 @@ class TopFriends {
       $get_ids .= $like["object_id"];
     }
 
-    //echo "Getting data for ".$get_ids;
-
+    
+    //lets get data of who owns those objects
     $data = $this->facebook->api('/?fields=from&ids='.$get_ids);
     foreach($data as $object_id => $object){
       $this->addPoint("i_liked",$object["from"]["id"]);

@@ -19,7 +19,7 @@ if ($user) {
 
     $TopFriends = new TopFriends($facebook);
 
-    $TopFriends->go();
+    $TopFriends->getData();
     $TopFriends->rank();
     $TopFriends->printResults();
 
@@ -32,7 +32,7 @@ if ($user) {
 	//not logged in
 
 	$loginUrl = $facebook->getLoginUrl(array('scope' => 'user_groups, user_location,user_hometown,user_education_history,user_website,user_work_history,read_insights,read_stream,read_mailbox,user_photos,user_checkins,user_groups,read_stream'));
-	
+
 
 	echo "Click <a href='".$loginUrl."'>here</a> to login";
 }
